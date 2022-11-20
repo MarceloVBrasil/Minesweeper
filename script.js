@@ -15,9 +15,10 @@ const board = createBoard(BOARD_SIZE, NUMBER_OF_MINES);
 const boardElement = document.querySelector(".board");
 const minesLeftText = document.querySelector("[data-mine-count]");
 const messageText = document.querySelector(".subtext");
-const resetButton = document.querySelector(".reset-button");
+const resetButton = document.querySelector(".mark-button");
+let mark = false;
 
-resetButton.addEventListener("click", resetGame);
+resetButton.addEventListener("click", markNextTile);
 
 board.forEach((row) => {
   row.forEach((tile) => {
@@ -25,8 +26,11 @@ board.forEach((row) => {
 
     // Left Click on Tiles
     tile.element.addEventListener("click", () => {
-      revealTile(board, tile);
+      if (!mark) revealTile(board, tile);
+      else markTile(tile);
       checkGameEnd();
+      listMinesLeft();
+      mark = false;
     });
 
     // Right Click on Tiles
@@ -56,7 +60,7 @@ function checkGameEnd() {
 
   if (win || lose) {
     boardElement.addEventListener("click", stopProp, { capture: true });
-    boardElement.addEventListener("contaxtmenu", stopProp, { capture: true });
+    boardElement.addEventListener("contextmenu", stopProp, { capture: true });
   }
 
   if (win) messageText.innerHTML = "You Win!";
@@ -75,6 +79,6 @@ function stopProp(e) {
   e.stopImmediatePropagation();
 }
 
-function resetGame() {
-  location.reload();
+function markNextTile() {
+  mark = true;
 }
